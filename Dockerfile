@@ -1,12 +1,29 @@
 FROM node:14
-ENV NPM_CONFIG_LOGLEVEL warn
+
+ENV NPM_CONFIG_LOGLEVEL=warn
+ENV WINSTON_CONSOLE_LEVEL=silly
+ENV MODELS_REPO=mongo
+ENV MONGO_URL=mongodb://mongo:27017/
+ENV MONGO_DB=learninglocker_v2
+ENV REDIS_PREFIX=LEARNINGLOCKER
+ENV REDIS_URL=redis://redis:6379/0
+ENV EXPRESS_PORT=8080
+ENV WINSTON_CLOUDWATCH_ENABLED=false
+ENV WINSTON_CLOUDWATCH_LEVEL=info
+ENV WINSTON_CLOUDWATCH_LOG_GROUP_NAME=''
+ENV WINSTON_CLOUDWATCH_ACCESS_KEY_ID=''
+ENV WINSTON_CLOUDWATCH_SECRET_ACCESS_KEY=''
+ENV WINSTON_CLOUDWATCH_REGION=''
+ENV WINSTON_CLOUDWATCH_LOG_STREAM_NAME=''
+
 WORKDIR /usr/src/app
 
+RUN touch .env
 COPY package.json package.json
 COPY yarn.lock yarn.lock
-COPY patches patches
-RUN yarn install --production --ignore-engines --frozen-lockfile
-COPY dist dist
+RUN yarn install --ignore-engines --frozen-lockfile
+COPY . .
+RUN yarn build
 
-EXPOSE 80
+EXPOSE 8081
 CMD ["yarn", "start"]
