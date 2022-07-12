@@ -1,3 +1,10 @@
+on:
+  workflow_dispatch:
+    inputs:
+      hotfix:
+        required: true
+        default: "No"
+
 name: Deploy to uddrewrite ECS
 
 jobs:
@@ -13,9 +20,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check ${{github.ref}} is up-to-date with Main
+      - name: Check ${{github.ref}} is up-to-date with master
         if: github.event.inputs.hotfix == 'No'
-        run: git config user.email "github@jisc.ac.uk" && git config user.name "GitHub Actions" && git merge origin/main
+        run: git config user.email "github@jisc.ac.uk" && git config user.name "GitHub Actions" && git merge origin/master
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -35,11 +42,9 @@ jobs:
           ECR_REPOSITORY: learninglocker-xapi-uddrewrite
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build --build-arg APP_VERSION=$APP_VERSION .
-          docker tag -t $ECR_REGISTRY/${ECR_REPOSITORY}:latest .
-
-          docker push $ECR_REGISTRY/${ECR_REPOSITORY}-api
-          echo "::set-output name=image::$ECR_REGISTRY/${ECR_REPOSITORY}:$IMAGE_TAG"
+          docker build -t $ECR_REGISTRY/${ECR_REPOSITORY}:latest --build-arg APP_VERSION=$APP_VERSION .
+          docker push $ECR_REGISTRY/${ECR_REPOSITORY}:latest
+          echo "::set-output name=image::$ECR_REGISTRY/${ECR_REPOSITORY}"
 
       - name: Deploy image to ECS
         id: deploy
