@@ -38,12 +38,12 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
-          DATABASE_TLS_CERTIFICATE: ${{ secrets.DATABASE_TLS_CERTIFICATE }}
+          DATABASE_TLS_CERTIFICATE_B64: ${{ secrets.DATABASE_TLS_CERTIFICATE_B64 }}
           ECR_REGISTRY: 684381864438.dkr.ecr.eu-west-1.amazonaws.com
           ECR_REPOSITORY: learninglocker-xapi-uddrewrite
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          printf '%s' ${DATABASE_TLS_CERTIFICATE} > ./mongodbca/rds-combined-ca-bundle.pem
+          printf %s ${DATABASE_TLS_CERTIFICATE_B64} | base64 -d > ./mongodbca/rds-combined-ca-bundle.pem
           docker build -t $ECR_REGISTRY/${ECR_REPOSITORY}:latest --build-arg APP_VERSION=$APP_VERSION .
           docker push $ECR_REGISTRY/${ECR_REPOSITORY}:latest
           echo "::set-output name=image::$ECR_REGISTRY/${ECR_REPOSITORY}"
