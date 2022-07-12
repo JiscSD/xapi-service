@@ -43,7 +43,7 @@ jobs:
           ECR_REPOSITORY: learninglocker-xapi-uddrewrite
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          mkdir -p /usr/src/app/mongodbca/ && echo ${DATABASE_TLS_CERTIFICATE} > /usr/src/app/mongodbca/rds-combined-ca-bundle.pem
+          printf '%s' ${DATABASE_TLS_CERTIFICATE} > ./mongodbca/rds-combined-ca-bundle.pem
           docker build -t $ECR_REGISTRY/${ECR_REPOSITORY}:latest --build-arg APP_VERSION=$APP_VERSION .
           docker push $ECR_REGISTRY/${ECR_REPOSITORY}:latest
           echo "::set-output name=image::$ECR_REGISTRY/${ECR_REPOSITORY}"
