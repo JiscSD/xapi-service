@@ -1,0 +1,1 @@
+Copy here your and configure your mongo connection string to use sslCA = rds-combined-ca-bundle.pem and ssl=true
