@@ -39,7 +39,7 @@
     "npm": ">3.0.0"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.100.0",
+    "@aws-sdk/client-s3": "^3.654.0",
     "@aws-sdk/lib-storage": "^3.100.0",
     "@azure/storage-blob": "^10.3.0",
     "@google-cloud/storage": "^5.8.1",
